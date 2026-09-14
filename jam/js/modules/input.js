@@ -53,6 +53,10 @@ class DBAbstractInput {
 				}
 				input += '</div>'
 			}
+			
+			else if (field_type === consts.IMAGE) {
+				input = '<div class="image-div">';
+			}
 		}	
 		//for modern input buttons on right side
 		else if (task.settings.MODERN_INPUT_BTNS === true){	
@@ -113,12 +117,16 @@ class DBAbstractInput {
 				}
 				input += '</div>';
 			}
+			
+			else if (field_type === consts.IMAGE) {
+				input = '<div class="image-div">';
+			}
 		}
 		//upgrade end
 		
-		else if (field_type === consts.IMAGE) {
+		/*else if (field_type === consts.IMAGE) {
 			input = '<div class="image-div">';
-		}
+		}*/
 		
 		if (field.lookup_data_type === consts.BOOLEAN) {
 			input = '<input class="form-check-input check-box-centered-input" type="checkbox" value="">';

@@ -7,51 +7,153 @@
         <link rel="icon" href="jam/img/j.png" type="image/png">
         <link href="jam/css/bs5/bootstrap-cerulean.css" rel="stylesheet">
         <link href="jam/css/bs5/bootstrap-icons.css" rel="stylesheet">
+        <link href="jam/css/bs5/jam-builder-theme.css" rel="stylesheet">
         <link href="jam/css/datepicker.css" rel="stylesheet">
         <link href="jam/css/jam.css" rel="stylesheet">
         <link href="jam/css/admin.css" rel="stylesheet">
     </head>
 
-    <body>
-        <div class="container">
+    <body class="bg-body-tertiary">
+        <div class="container-fluid px-2 px-md-3 builder-app">
             <div id="content" style="display: none">
-                <div class="container-fluid">
-                    <div id="builder-status" class="row">
-                        <div id="project-mode" class="col-6 text-danger fw-bold">
-                        </div>
-                        <div class="col-6 text-end">
-                            <span id="user-info"></span>
-                            <a href="#" id="log-out" style="display: none">Logout</a>
+                <header class="builder-topbar">
+                    <div class="builder-brand">
+                        <span class="builder-brand-mark"><i class="bi bi-boxes"></i></span>
+                        <span>Jam.py <span class="fw-normal text-body-secondary">Application builder</span></span>
+                    </div>
+
+                    <div class="builder-status-wrap">
+                        <div id="builder-status" class="d-flex align-items-center gap-2">
+                            <div id="project-mode" class="text-danger fw-semibold"></div>
                         </div>
                     </div>
+
+                    <div class="builder-topbar-spacer"></div>
+					<div class="builder-user-area d-flex align-items-center gap-2">
+						<div class="user-avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 30px; height: 30px; font-size: 0.9rem;">
+							<i class="bi bi-person-fill"><!-- Or use JS to insert user initials here --></i>
+						</div>
+						<div class="d-flex flex-column">
+							<span id="user-info" class="fw-semibold text-dark text-truncate" style="max-width: 180px;">Loading...</span>
+							<span class="text-muted" style="font-size: 0.75rem;">Active Session</span>
+						</div>
+						<button type="button" id="log-out" class="btn btn-outline-danger btn-sm ms-auto d-flex align-items-center gap-1 px-2 py-1 d-none" style="font-size: 0.8rem;">
+							<i class="bi bi-box-arrow-right"></i>
+							<span>Logout</span>
+						</button>
+					</div>
+                </header>
+
+                <div class="builder-workspace-label d-flex align-items-center justify-content-between gap-2 py-2">
+                    <div class="d-flex align-items-center gap-2 min-w-0">
+                        <ul id="task-tabs" class="nav nav-pills builder-task-tabs">
+                            <li class="nav-item">
+                                <button class="nav-link active d-flex align-items-center gap-2" id="admin" data-bs-toggle="tab" type="button">
+                                    <i class="bi bi-grid-3x3-gap"></i>
+                                    <span>Application builder</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+						<div class="dropdown">
+							<button type="button" id="builder-inspector-options"
+									class="btn btn-sm btn-outline-secondary dropdown-toggle"
+									data-bs-toggle="dropdown" aria-expanded="false"
+									aria-label="Inspector options">
+								<i class="bi bi-box-arrow-up-right me-1"></i>&nbsp; Actions
+							</button>
+							<ul id="builder-inspector-options-menu"
+								class="dropdown-menu dropdown-menu-end shadow-sm builder-inspector-options-menu">
+								<li><span class="dropdown-item-text small text-body-secondary">No actions</span></li>
+							</ul>
+						</div>
+                        <div class="dropdown">
+                            <button id="builder-recent-btn" class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-clock-history me-1"></i>Recent
+                            </button>
+                            <ul id="builder-recent-menu" class="dropdown-menu dropdown-menu-end shadow-sm builder-recent-menu">
+                                <li><span class="dropdown-item-text text-body-secondary small">No recent objects</span></li>
+                            </ul>
+                        </div>
+                        <!-- <span class="builder-short-status small text-body-secondary d-none d-xl-inline">
+                            <i class="bi bi-command me-1"></i>Ctrl+K Command palette
+                        </span>-->
+						<button id="command_palete_btn" type="button" class="btn btn-outline-secondary">
+							<i class="bi bi-command me-1"></i>Ctrl+K Command palette
+						</button>
+                    </div>
                 </div>
-                <div class="container-fluid">
-                    <ul id="task-tabs" class="nav nav-tabs">
-                        <li class="nav-item">
-                            <button class="nav-link active" id="admin" data-bs-toggle="tab" type="button">Application builder</button>
-                        </li>
-                    </ul>
-                    <div id="tab-content" class="border rounded-bottom">
-                        <div id="admin" class="tab-pane active">
+
+                <div id="tab-content" class="builder-content border rounded-3 shadow-sm overflow-hidden">
+                    <div id="admin" class="tab-pane active">
                             <table class="table-fixed">
                                 <tr>
-                                    <td id="left-panel" class="border">
+                                    <td id="left-panel" class="builder-sidebar-panel border-end">
+                                        <div class="builder-panel-heading d-flex align-items-center justify-content-between px-3 py-2">
+                                            <span class="small fw-semibold text-uppercase text-body-secondary">Explorer</span>
+                                            <span class="badge rounded-pill text-bg-light border">Task tree</span>
+                                        </div>
+                                        <div class="px-2 pt-2 pb-1">
+                                            <div class="input-group input-group-sm builder-tree-search">
+                                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                                <input id="builder-tree-search" type="search" class="form-control"
+                                                       placeholder="Search objects..." autocomplete="off"
+                                                       aria-label="Search builder objects">
+                                                <button id="builder-tree-search-clear" type="button"
+                                                        class="btn btn-outline-secondary d-none" tabindex="-1"
+                                                        aria-label="Clear object search" title="Clear search">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center px-1 pt-1">
+                                                <!-- <span id="builder-search-hint" class="small text-body-tertiary">Ctrl+Shift+E to focus</span> -->
+                                                <span id="builder-search-count" class="badge rounded-pill text-bg-light border d-none"></span>
+                                            </div>
+                                        </div>
                                         <div id="tree-panel" class="side-panel">
                                         </div>
                                     </td>
                                     <td id="center-panel">
                                         <div class="container">
-                                            <div id="center-heading" class="row text-dark">
-                                                <div id="title-left" class="col-4 text-start">
+                                            <div id="center-heading" class="builder-center-heading d-flex align-items-center justify-content-between gap-3">
+                                                <div class="builder-context-stack min-w-0">
+                                                    <div id="builder-breadcrumbs" class="builder-breadcrumbs small text-body-secondary text-truncate">
+                                                        <span class="text-body-tertiary">Project</span>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-2 min-w-0">
+                                                        <span id="builder-context-badge" class="badge rounded-pill text-bg-light border d-none"></span>
+                                                        <div id="title-left" class="builder-title text-start text-truncate">
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div id="task-info" class="col-8 text-end">
+                                                <div id="task-info" class="builder-task-info text-end text-body-secondary small text-truncate">
                                                 </div>
                                             </div>
                                         </div>
                                         <div id="view-panel" class="center-panel">
                                         </div>
                                     </td>
-                                    <td id="right-panel" class="border">
+                                    <td id="right-panel" class="builder-inspector-panel border-start">
+                                        <div class="builder-panel-heading d-flex align-items-center justify-content-between px-3 py-2">
+                                            <div class="min-w-0">
+                                                <div class="small fw-semibold text-uppercase text-body-secondary">Actions</div>
+                                                <!-- <div id="builder-inspector-context" class="small text-body-tertiary text-truncate">Select an object</div> -->
+                                            </div>
+                                            <!-- <div class="dropdown">
+                                                <button type="button" id="builder-inspector-options"
+                                                        class="btn btn-sm btn-light border btn-icon"
+                                                        data-bs-toggle="dropdown" aria-expanded="false"
+                                                        aria-label="Inspector options" title="Contextual actions">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul id="builder-inspector-options-menu"
+                                                    class="dropdown-menu dropdown-menu-end shadow-sm builder-inspector-options-menu">
+                                                    <li><span class="dropdown-item-text small text-body-secondary">No actions</span></li>
+                                                </ul>
+                                            </div> -->
+                                        </div>
                                         <div id="btns-panel" class="side-panel">
                                         </div>
                                     </td>
@@ -77,14 +179,14 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div class="editor-footer">
+                            <div class="editor-footer builder-editor-commandbar">
                                 <div>
                                     <span id="error-info" class="text-danger fs-5 fw-bold"></span>
                                 </div>
                                 <div>
-                                    <button type="button" id="monaco-btn" class="btn btn-secondary"><i class="bi bi-search"></i> monaco_shortcuts<small class="muted">&nbsp;[Alt+U]</small></button>
-                                    <button type="button" id="find-btn" class="btn btn-secondary"><i class="bi bi-search"></i> find_in_task<small class="muted">&nbsp;[Alt+F]</small></button>
-                                    <button type="button" id="ok-btn" class="btn btn-primary"><i class="icon-ok"></i> OK<small class="muted">&nbsp;[Ctrl+S]</small></button>
+                                    <button type="button" id="monaco-btn" class="btn btn-outline-secondary"><i class="bi bi-search"></i> monaco_shortcuts<small class="muted">&nbsp;[Alt+U]</small></button>
+                                    <button type="button" id="find-btn" class="btn btn-outline-secondary"><i class="bi bi-search"></i> find_in_task<small class="muted">&nbsp;[Alt+F]</small></button>
+                                    <button type="button" id="ok-btn" class="btn btn-primary"><i class="bi bi-check-lg"></i> OK<small class="muted">&nbsp;[Ctrl+S]</small></button>
                                 </div>
                             </div>
                         </div>
@@ -97,13 +199,13 @@
                         <div class="view-table">
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button id="delete-btn" class="btn btn-danger" type="button"><i class="bi bi-trash"></i> Delete<small class="muted">&nbsp;[Ctrl+Del]</small></button>
-                        <button id="edit-btn" class="btn btn-secondary" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
-                        <button id="new-btn" class="btn btn-secondary" type="button"><i class="bi bi-plus-square"></i> New<small class="muted">&nbsp;[Ctrl+Ins]</small></button>
+                    <div class="form-footer builder-commandbar">
+                        <button id="delete-btn" class="btn btn-outline-danger" type="button"><i class="bi bi-trash"></i> Delete<small class="muted">&nbsp;[Ctrl+Del]</small></button>
+                        <button id="edit-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
+                        <button id="new-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-plus-square"></i> New<small class="muted">&nbsp;[Ctrl+Ins]</small></button>
                         <div id="report-btn" class="btn-group dropup">
-                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class="icon-print"></i> Reports
+                            <a class="btn dropdown-toggle" data-bs-toggle="dropdown" href="#">
+                                <i class="bi bi-printer"></i> Reports
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu bottom-up">
@@ -117,13 +219,13 @@
                         <div class="view-table">
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button id="delete-btn" class="btn btn-danger" type="button"><i class="bi bi-trash"></i> Delete<small class="muted">&nbsp;[Ctrl+Del]</small></button>
-                        <button id="edit-btn" class="btn btn-secondary" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
-                        <button id="new-btn" class="btn btn-secondary" type="button"><i class="bi bi-plus-square"></i> New<small class="muted">&nbsp;[Ctrl+Ins]</small></button>
+                    <div class="form-footer builder-commandbar">
+                        <button id="delete-btn" class="btn btn-outline-danger" type="button"><i class="bi bi-trash"></i> Delete<small class="muted">&nbsp;[Ctrl+Del]</small></button>
+                        <button id="edit-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
+                        <button id="new-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-plus-square"></i> New<small class="muted">&nbsp;[Ctrl+Ins]</small></button>
                         <div id="report-btn" class="btn-group dropup">
-                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class="icon-print"></i> Reports
+                            <a class="btn dropdown-toggle" data-bs-toggle="dropdown" href="#">
+                                <i class="bi bi-printer"></i> Reports
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu bottom-up">
@@ -137,16 +239,16 @@
                         <div class="view-table">
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button id="delete-btn" class="btn btn-danger" type="button"><i class="bi bi-trash"></i> Delete<small class="muted">&nbsp;[Ctrl+Del]</small></button>
-                        <button type="button" id="move-btn" class="btn btn-secondary"><i class="bi bi-folder-minus"></i> Change group</button>
+                    <div class="form-footer builder-commandbar">
+                        <button id="delete-btn" class="btn btn-outline-danger" type="button"><i class="bi bi-trash"></i> Delete<small class="muted">&nbsp;[Ctrl+Del]</small></button>
+                        <button type="button" id="move-btn" class="btn btn-outline-secondary"><i class="bi bi-folder-minus"></i> Change group</button>
                         <button type="button" id="up-btn" class="btn btn-secondary up-down-btn"><i class="bi bi-arrow-up"></i></button>
                         <button type="button" id="down-btn" class="btn btn-secondary up-down-btn"><i class="bi bi-arrow-down"></i></button>
-                        <button id="import-btn" class="btn btn-secondary" type="button"><i class="bi bi-arrow-left-right"></i> Import</button>
-                        <button id="copy-btn" class="btn btn-secondary" type="button"><i class="bi bi-copy"></i> Copy</button>
-                        <button id="edit-btn" class="btn btn-secondary" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
-                        <button id="new-report-group-btn" class="btn btn-secondary" type="button"><i class="bi bi-folder-plus"></i> New report group</button>
-                        <button id="new-btn" class="btn btn-secondary" type="button"><i class="bi bi-plus-square"></i> New<small class="muted">&nbsp;[Ctrl+Ins]</small></button>
+                        <button id="import-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-arrow-left-right"></i> Import</button>
+                        <button id="copy-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-copy"></i> Copy</button>
+                        <button id="edit-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
+                        <button id="new-report-group-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-folder-plus"></i> New report group</button>
+                        <button id="new-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-plus-square"></i> New<small class="muted">&nbsp;[Ctrl+Ins]</small></button>
                     </div>
                 </div>
 
@@ -155,7 +257,7 @@
                         <div class="view-table">
                         </div>
                     </div>
-                    <div class="form-footer" style="text-align: center">
+                    <div class="form-footer builder-commandbar" style="text-align: center">
                         <button type="button" id="create-btn" class="btn"> Create</button>
                     </div>
                 </div>
@@ -165,8 +267,8 @@
                         <div class="view-table">
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button id="import-btn" class="btn btn-secondary" type="button"> Import</button>
+                    <div class="form-footer builder-commandbar">
+                        <button id="import-btn" class="btn btn-outline-secondary" type="button"> Import</button>
                     </div>
                 </div>
 
@@ -175,13 +277,13 @@
                         <div class="view-table">
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button id="delete-btn" class="btn btn-danger" type="button"><i class="bi bi-trash"></i> Delete<small class="muted">&nbsp;[Ctrl+Del]</small></button>
+                    <div class="form-footer builder-commandbar">
+                        <button id="delete-btn" class="btn btn-outline-danger" type="button"><i class="bi bi-trash"></i> Delete<small class="muted">&nbsp;[Ctrl+Del]</small></button>
 
                         <button type="button" id="up-btn" class="btn btn-secondary up-down-btn"><i class="bi bi-arrow-up"></i></button>
                         <button type="button" id="down-btn" class="btn btn-secondary up-down-btn"><i class="bi bi-arrow-down"></i></button>
-                        <button id="edit-btn" class="btn btn-secondary" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
-                        <button id="new-btn" class="btn btn-secondary" type="button"><i class="bi bi-plus-square"></i> New<small class="muted">&nbsp;[Ctrl+Ins]</small></button>
+                        <button id="edit-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
+                        <button id="new-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-plus-square"></i> New<small class="muted">&nbsp;[Ctrl+Ins]</small></button>
                     </div>
                 </div>
 
@@ -190,10 +292,10 @@
                         <div class="view-table">
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button id="delete-btn" class="btn btn-danger" type="button"><i class="bi bi-trash"></i> Delete<small class="muted">&nbsp;[Ctrl+Del]</small></button>
-                        <button id="edit-btn" class="btn btn-secondary" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
-                        <button id="new-btn" class="btn btn-secondary" type="button"><i class="bi bi-plus-square"></i> New<small class="muted">&nbsp;[Ctrl+Ins]</small></button>
+                    <div class="form-footer builder-commandbar">
+                        <button id="delete-btn" class="btn btn-outline-danger" type="button"><i class="bi bi-trash"></i> Delete<small class="muted">&nbsp;[Ctrl+Del]</small></button>
+                        <button id="edit-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
+                        <button id="new-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-plus-square"></i> New<small class="muted">&nbsp;[Ctrl+Ins]</small></button>
                     </div>
                 </div>
 
@@ -203,17 +305,17 @@
                             <div id="roles-panel" class="col-4">
                                 <div class="view-table">
                                 </div>
-                                <div id="roles-footer" class="form-footer">
-                                    <button id="delete-btn" class="btn btn-danger" type="button"><i class="bi bi-trash"></i> Delete</button>
-                                    <button id="new-btn" class="btn btn-secondary" type="button"><i class="bi bi-plus-square"></i> New</button>
+                                <div id="roles-footer" class="form-footer builder-commandbar">
+                                    <button id="delete-btn" class="btn btn-outline-danger" type="button"><i class="bi bi-trash"></i> Delete</button>
+                                    <button id="new-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-plus-square"></i> New</button>
                                 </div>
                             </div>
                             <div id="priv-panel" class="col-8">
                                 <div class="view-table">
                                 </div>
-                                <div class="form-footer">
-                                    <button id="unselect-all-btn" class="btn btn-secondary" type="button"><i class="icon-minus"></i> Unselect all</button>
-                                    <button id="select-all-btn" class="btn btn-secondary" type="button"><i class="bi bi-plus-square"></i> Select all</button>
+                                <div class="form-footer builder-commandbar">
+                                    <button id="unselect-all-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-dash-lg"></i> Unselect all</button>
+                                    <button id="select-all-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-plus-square"></i> Select all</button>
                                 </div>
                                 <div class="view-fields">
                                 </div>
@@ -229,9 +331,9 @@
                         <div class="view-fields">
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button id="unselect-all-btn" class="btn btn-secondary" type="button"><i class="icon-minus"></i> Unselect all</button>
-                        <button id="select-all-btn" class="btn btn-secondary" type="button"><i class="bi bi-plus-square"></i> Select all</button>
+                    <div class="form-footer builder-commandbar">
+                        <button id="unselect-all-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-dash-lg"></i> Unselect all</button>
+                        <button id="select-all-btn" class="btn btn-outline-secondary" type="button"><i class="bi bi-plus-square"></i> Select all</button>
                     </div>
                 </div>
 
@@ -247,7 +349,7 @@
                             </li>
                         </ul>
                         <div id="media-pills" style="display: none">
-                            <ul class="nav nav-pills text-center" id="media-tabs">
+                            <ul class="nav nav-pills text-center builder-device-tabs" id="media-tabs">
                                 <a class="nav-link active" data-media="0" id="media0">Desktop</a>
                                 <a class="nav-link" data-media="1" id="media1">Tablet</a>
                                 <a class="nav-link" data-media="2" id="media2">Phone</a>
@@ -262,9 +364,9 @@
                                         <ul class="nav nav-tabs flex-grow-1" id="field-tabs">
                                         </ul>
                                         <div id="tab-btns" class="d-flex justify-content-end">
-                                            <button type="button" id="add-tab-btn" class="btn btn-outline-secondary up-down-btn"><i class="bi bi-plus-square"></i></button>
-                                            <button type="button" id="edit-tab-btn" class="btn btn-outline-secondary up-down-btn"><i class="bi bi-pencil-square"></i></button>
-                                            <button type="button" id="delete-tab-btn" class="btn btn-outline-secondary up-down-btn"><i class="bi bi-trash"></i></button>
+                                            <button type="button" id="add-tab-btn" class="btn btn-outline-secondary btn-icon up-down-btn"><i class="bi bi-plus-square"></i></button>
+                                            <button type="button" id="edit-tab-btn" class="btn btn-outline-secondary btn-icon up-down-btn"><i class="bi bi-pencil-square"></i></button>
+                                            <button type="button" id="delete-tab-btn" class="btn btn-outline-secondary btn-icon up-down-btn"><i class="bi bi-trash"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -272,8 +374,8 @@
                                     <tr>
                                         <td id="bands-box" class="text-center" style="display: none">
                                             <div>
-                                                <button type="button" id="add-band-btn" class="btn btn-outline-secondary up-down-btn"><i class="bi bi-plus-square"></i></button>
-                                                <button type="button" id="delete-band-btn" class="btn btn-outline-secondary up-down-btn"><i class="bi bi-trash"></i></button>
+                                                <button type="button" id="add-band-btn" class="btn btn-outline-secondary btn-icon up-down-btn"><i class="bi bi-plus-square"></i></button>
+                                                <button type="button" id="delete-band-btn" class="btn btn-outline-secondary btn-icon up-down-btn"><i class="bi bi-trash"></i></button>
                                             </div>
                                             <div class="tabs-left">
                                                 <ul class="nav flex-column" id="field-bands">
@@ -287,20 +389,22 @@
                                                 <tr>
                                                     <td id="fields-left-box" class="border">
                                                         <div id="fields-editor">
+                                                            <div class="builder-subpanel-title">Available fields</div>
                                                             <div id="left-grid" class="fields-grid"></div>
                                                                 <div id="vert-btns-box" class="text-center">
                                                                     <span>
-                                                                        <button type="button" id="up-btn" class="btn btn-outline-secondary up-down-btn"><i class="bi bi-arrow-up"></i></button>
-                                                                        <button type="button" id="down-btn" class="btn btn-outline-secondary up-down-btn"><i class="bi bi-arrow-down"></i></button>
+                                                                        <button type="button" id="up-btn" class="btn btn-outline-secondary btn-icon up-down-btn"><i class="bi bi-arrow-up"></i></button>
+                                                                        <button type="button" id="down-btn" class="btn btn-outline-secondary btn-icon up-down-btn"><i class="bi bi-arrow-down"></i></button>
                                                                     </span>
                                                                 </div>
                                                         </div>
                                                     </td>
                                                     <td id="fields-center-box" class="text-center">
-                                                        <button type="button" id="left-btn" class="btn btn-outline-secondary left-right-btn"><i class="bi bi-arrow-left"></i></button>
-                                                        <button type="button" id="right-btn" class="btn btn-outline-secondary left-right-btn"><i class="bi bi-arrow-right"></i></button>
+                                                        <button type="button" id="left-btn" class="btn btn-outline-secondary btn-icon left-right-btn"><i class="bi bi-arrow-left"></i></button>
+                                                        <button type="button" id="right-btn" class="btn btn-outline-secondary btn-icon left-right-btn"><i class="bi bi-arrow-right"></i></button>
                                                     </td>
                                                     <td id="fields-right-box" class="border">
+                                                        <div class="builder-subpanel-title">Form layout</div>
                                                         <div id="right-grid" class="fields-grid"></div>
                                                     </td>
                                                     <td id="options-box" class="td-panel" style="display: none; width: auto">
@@ -328,11 +432,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-footer">
+                    <div class="form-footer builder-commandbar">
                         <button type="button" id="ok-btn" class="btn btn-primary">
                             <i class="bi bi-check-square"></i> OK
                         </button>
-                        <button type="button" id="cancel-btn" class="btn btn-secondary">
+                        <button type="button" id="cancel-btn" class="btn btn-outline-secondary">
                             <i class="bi bi-x-square"></i> Cancel<small class="muted">&nbsp;[Esc]</small>
                         </button>
                     </div>
@@ -343,8 +447,8 @@
                         <div class="view-table">
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button id="select-btn" class="btn btn btn-secondary" type="button">Select<small class="muted">&nbsp;[Enter]</small></button>
+                    <div class="form-footer builder-commandbar">
+                        <button id="select-btn" class="btn btn-outline-secondary" type="button">Select<small class="muted">&nbsp;[Enter]</small></button>
                     </div>
                 </div>
 
@@ -383,8 +487,8 @@
                         <div class="edit-title"></div>
                         <div class="edit-body"></div>
                     </div>
-                    <div class="form-footer" style="display: none">
-                        <button type="button" id="new-btn" class="btn btn-secondary"> New</button>
+                    <div class="form-footer builder-commandbar" style="display: none">
+                        <button type="button" id="new-btn" class="btn btn-outline-secondary"> New</button>
                         <button type="button" id="delete-btn" class="btn btn-danger"> Delete</button>
                     </div>
                 </div>
@@ -394,9 +498,9 @@
                         <div class="edit-body">
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button type="button" id="ok-btn" class="btn btn-primary"><i class="icon-ok"></i> OK<small class="muted">&nbsp;[Ctrl+Enter]</small></button>
-                        <button type="button" id="cancel-btn" class="btn btn-secondary">
+                    <div class="form-footer builder-commandbar">
+                        <button type="button" id="ok-btn" class="btn btn-primary"><i class="bi bi-check-lg"></i> OK<small class="muted">&nbsp;[Ctrl+Enter]</small></button>
+                        <button type="button" id="cancel-btn" class="btn btn-outline-secondary">
                             <i class="bi bi-x-square"></i> Cancel<small class="muted">&nbsp;[Esc]</small>
                         </button>
                     </div>
@@ -407,10 +511,10 @@
                         <div class="edit-body">
                         </div>
                     </div>
-                    <div class="form-footer">
+                    <div class="form-footer builder-commandbar">
                         <button type="button" id="ok-btn" class="btn btn-primary">
                             <i class="bi bi-search"></i> Find<small class="muted">&nbsp;[Enter]</small></button>
-                        <button type="button" id="cancel-btn" class="btn btn-secondary">
+                        <button type="button" id="cancel-btn" class="btn btn-outline-secondary">
                             <i class="bi bi-x-square"></i> Cancel<small class="muted">&nbsp;[Esc]</small>
                         </button>
                     </div>
@@ -421,11 +525,11 @@
                         <div class="edit-body">
                         </div>
                     </div>
-                    <div class="form-footer">
+                    <div class="form-footer builder-commandbar">
                         <button type="button" id="ok-btn" class="btn btn-primary">
-                                <i class="icon-ok"></i> OK<small class="muted">&nbsp;[Ctrl+Enter]</small>
+                                <i class="bi bi-check-lg"></i> OK<small class="muted">&nbsp;[Ctrl+Enter]</small>
                         </button>
-                        <button type="button" id="cancel-btn" class="btn btn-secondary">
+                        <button type="button" id="cancel-btn" class="btn btn-outline-secondary">
                             <i class="bi bi-x-square"></i> Cancel<small class="muted">&nbsp;[Esc]</small>
                         </button>
                     </div>
@@ -438,9 +542,9 @@
                         <div class="edit-detail">
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button type="button" id="ok-btn" class="btn btn-primary"><i class="icon-ok"></i> OK<small class="muted">&nbsp;[Ctrl+Enter]</small></button>
-                        <button type="button" id="cancel-btn" class="btn btn-secondary">
+                    <div class="form-footer builder-commandbar">
+                        <button type="button" id="ok-btn" class="btn btn-primary"><i class="bi bi-check-lg"></i> OK<small class="muted">&nbsp;[Ctrl+Enter]</small></button>
+                        <button type="button" id="cancel-btn" class="btn btn-outline-secondary">
                             <i class="bi bi-x-square"></i> Cancel<small class="muted">&nbsp;[Esc]</small>
                         </button>
                     </div>
@@ -453,15 +557,15 @@
                         <div class="edit-detail">
                         </div>
                     </div>
-                    <div id="edit-detail-footer" class="form-footer">
-                        <button id="delete-btn" class="btn btn-danger" type="button">Delete<small class="muted">&nbsp;[Ctrl+Del]</small></button>
-                        <button id="add-fields-btn" class="btn btn-secondary" type="button">Add fields</button>
-                        <button id="edit-btn" class="btn btn-secondary" type="button">Edit</button>
-                        <button id="new-btn" class="btn btn-secondary" type="button">New<small class="muted">&nbsp;[Ctrl+Ins]</small></button>
+                    <div id="edit-detail-footer" class="form-footer builder-commandbar">
+                        <button id="delete-btn" class="btn btn-outline-danger" type="button">Delete<small class="muted">&nbsp;[Ctrl+Del]</small></button>
+                        <button id="add-fields-btn" class="btn btn-outline-secondary" type="button">Add fields</button>
+                        <button id="edit-btn" class="btn btn-outline-secondary" type="button">Edit</button>
+                        <button id="new-btn" class="btn btn-outline-secondary" type="button">New<small class="muted">&nbsp;[Ctrl+Ins]</small></button>
                     </div>
-                    <div id="edit-footer" class="form-footer">
+                    <div id="edit-footer" class="form-footer builder-commandbar">
                         <button type="button" id="ok-btn" class="btn btn-primary">OK<small class="muted">&nbsp;[Ctrl+Enter]</small></button>
-                        <button type="button" id="cancel-btn" class="btn btn-secondary">
+                        <button type="button" id="cancel-btn" class="btn btn-outline-secondary">
                             <i class="bi bi-x-square"></i> Cancel<small class="muted">&nbsp;[Esc]</small>
                         </button>
                     </div>
@@ -474,14 +578,14 @@
                         <div class="edit-detail">
                         </div>
                     </div>
-                    <div id="edit-detail-footer" class="form-footer">
-                        <button id="delete-btn" class="btn btn-danger" type="button">Delete</button>
-                        <button id="edit-btn" class="btn btn-secondary" type="button">Edit</button>
-                        <button id="new-btn" class="btn btn-secondary" type="button">New</button>
+                    <div id="edit-detail-footer" class="form-footer builder-commandbar">
+                        <button id="delete-btn" class="btn btn-outline-danger" type="button">Delete</button>
+                        <button id="edit-btn" class="btn btn-outline-secondary" type="button">Edit</button>
+                        <button id="new-btn" class="btn btn-outline-secondary" type="button">New</button>
                     </div>
-                    <div id="edit-footer" class="form-footer">
+                    <div id="edit-footer" class="form-footer builder-commandbar">
                         <button type="button" id="ok-btn" class="btn btn-primary">OK</button>
-                        <button type="button" id="cancel-btn" class="btn btn-secondary">
+                        <button type="button" id="cancel-btn" class="btn btn-outline-secondary">
                             <i class="bi bi-x-square"></i> Cancel<small class="muted">&nbsp;[Esc]</small>
                         </button>
                     </div>
@@ -492,9 +596,9 @@
                         <div class="edit-body">
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button type="button" id="ok-btn" class="btn btn-primary"><i class="icon-print"></i> Print</button>
-                        <button type="button" id="cancel-btn" class="btn btn-secondary">
+                    <div class="form-footer builder-commandbar">
+                        <button type="button" id="ok-btn" class="btn btn-primary"><i class="bi bi-printer"></i> Print</button>
+                        <button type="button" id="cancel-btn" class="btn btn-outline-secondary">
                             <i class="bi bi-x-square"></i> Close
                         </button>
                     </div>
@@ -505,14 +609,45 @@
                         <div class="edit-body">
                         </div>
                     </div>
-                    <div class="form-footer">
-                        <button type="button" id="ok-btn" class="btn btn-primary"><i class="icon-filter"></i> Apply</button>
-                        <button type="button" id="cancel-btn" class="btn btn-secondary">
+                    <div class="form-footer builder-commandbar">
+                        <button type="button" id="ok-btn" class="btn btn-primary"><i class="bi bi-funnel"></i> Apply</button>
+                        <button type="button" id="cancel-btn" class="btn btn-outline-secondary">
                             <i class="bi bi-x-square"></i> Close
                         </button>
                     </div>
                 </div>
             </div>
+			
+			<!-- Global command palette / quick search -->
+			<div class="modal fade" id="builder-command-palette-modal" tabindex="-1" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered modal-lg">
+					<div class="modal-content shadow-lg border-0">
+						<div class="modal-header border-bottom p-2 px-3 bg-body-tertiary">
+							<div class="input-group input-group-merge">
+								<span class="input-group-text bg-transparent border-0 fs-5">
+									<i class="bi bi-search text-body-tertiary"></i>
+								</span>
+								<input type="search" id="builder-command-input"
+									   class="form-control border-0 bg-transparent shadow-none fs-6"
+									   placeholder="Type a command or search objects (e.g. Invoices, Lookups, CSS)..."
+									   autocomplete="off">
+							</div>
+							<button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body p-0" style="max-height: 420px; overflow-y: auto;">
+							<div id="builder-command-results" class="list-group list-group-flush"></div>
+						</div>
+						<div class="modal-footer py-1 px-3 bg-body-tertiary justify-content-between small text-body-tertiary border-top">
+							<div class="d-flex align-items-center gap-3">
+								<span><kbd class="me-1">↑</kbd><kbd class="me-1">↓</kbd> Navigate</span>
+								<span><kbd class="me-1">↵</kbd> Select</span>
+								<span><kbd class="me-1">Esc</kbd> Close</span>
+							</div>
+							<div><span class="fw-semibold">Jam.py Palette</span></div>
+						</div>
+					</div>
+				</div>
+			</div>
         </div>
 
         <script src="jam/js/jquery.js"></script>
@@ -559,6 +694,26 @@
         })();
         </script>
   
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('#content button, #content a').forEach(function (el) {
+                    if (!el.getAttribute('title') && el.querySelector('small.muted')) {
+                        el.setAttribute('title', el.querySelector('small.muted').textContent.replace(/[\[\]]/g, '').trim());
+                    }
+                });
+
+                if (window.bootstrap) {
+                    document.querySelectorAll('#content [title]').forEach(function (el) {
+                        try { new bootstrap.Tooltip(el, { placement: 'bottom' }); } catch (e) {}
+                    });
+                }
+            });
+        </script>
+
+        <!-- Stage 2 navigation enhancement. Uses existing Jam.py builder APIs; no CRUD/action handlers are duplicated. -->
+        <script src="jam/js/admin-navigation.js"></script>
+
         <script>
             $(document).ready(function(){
                 task.ID = 0; task.load();

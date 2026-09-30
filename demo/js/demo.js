@@ -18,9 +18,7 @@ function Events1() { // demo
 		  
 		if (task.safe_mode) {
 			$("#user-info").text(task.user_info.role_name + ' ' + task.user_info.user_name);
-			$('#log-out')
-			.show() 
-			.click(function(e) {
+			$('#log-out').removeClass("d-none") .click(function(e) {
 				e.preventDefault();
 				task.logout();
 			}); 

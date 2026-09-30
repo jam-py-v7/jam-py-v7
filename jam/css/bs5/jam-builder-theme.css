@@ -1,0 +1,1231 @@
+/*
+ * Jam.py V7 Builder — Bootstrap 5 ergonomic developer theme
+ *
+ * Purpose:
+ *   A low-glare, high-clarity Bootstrap 5 theme for long developer sessions.
+ *   It is designed to be loaded AFTER bootstrap-cerulean.css and BEFORE admin.css.
+ *
+ * Compatibility:
+ *   - Bootstrap 5 utility/component classes remain the primary API.
+ *   - Jam.py-specific selectors are limited to builder surfaces.
+ *   - No Jam.py IDs are renamed or required.
+ *   - Monaco/editor colors are intentionally left mostly independent.
+ */
+
+:root {
+    color-scheme: light;
+
+    /* ---------------------------------------------------------
+       Bootstrap semantic color system
+       --------------------------------------------------------- */
+    --bs-body-font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    --bs-body-font-size: 0.875rem;
+    --bs-body-font-weight: 400;
+    --bs-body-line-height: 1.45;
+    --bs-body-color: #263443;
+    --bs-body-color-rgb: 38, 52, 67;
+    --bs-body-bg: #f5f7fa;
+    --bs-body-bg-rgb: 245, 247, 250;
+
+    --bs-emphasis-color: #17212b;
+    --bs-emphasis-color-rgb: 23, 33, 43;
+    --bs-secondary-color: rgba(38, 52, 67, 0.70);
+    --bs-secondary-color-rgb: 38, 52, 67;
+    --bs-tertiary-color: rgba(38, 52, 67, 0.50);
+    --bs-tertiary-color-rgb: 38, 52, 67;
+
+    --bs-secondary-bg: #e9edf2;
+    --bs-secondary-bg-rgb: 233, 237, 242;
+    --bs-tertiary-bg: #eef2f6;
+    --bs-tertiary-bg-rgb: 238, 242, 246;
+
+    --bs-border-color: #d7dee7;
+    --bs-border-color-translucent: rgba(60, 75, 90, 0.14);
+
+    --bs-primary: #356f9f;
+    --bs-primary-rgb: 53, 111, 159;
+    --bs-primary-bg-subtle: #e7f0f7;
+    --bs-primary-border-subtle: #bcd1e2;
+    --bs-primary-text-emphasis: #234d70;
+
+    --bs-secondary: #667586;
+    --bs-secondary-rgb: 102, 117, 134;
+    --bs-secondary-bg-subtle: #eef1f4;
+    --bs-secondary-border-subtle: #d7dde4;
+    --bs-secondary-text-emphasis: #46515d;
+
+    --bs-success: #3f7f60;
+    --bs-success-rgb: 63, 127, 96;
+    --bs-success-bg-subtle: #eaf4ee;
+    --bs-success-border-subtle: #c6dfcf;
+    --bs-success-text-emphasis: #2d5f46;
+
+    --bs-info: #3f7788;
+    --bs-info-rgb: 63, 119, 136;
+    --bs-info-bg-subtle: #eaf2f5;
+    --bs-info-border-subtle: #c5d9df;
+    --bs-info-text-emphasis: #2d5866;
+
+    --bs-warning: #a67b2d;
+    --bs-warning-rgb: 166, 123, 45;
+    --bs-warning-bg-subtle: #fbf4e4;
+    --bs-warning-border-subtle: #ebd9a8;
+    --bs-warning-text-emphasis: #755817;
+
+    --bs-danger: #a45151;
+    --bs-danger-rgb: 164, 81, 81;
+    --bs-danger-bg-subtle: #f8ebeb;
+    --bs-danger-border-subtle: #e5c8c8;
+    --bs-danger-text-emphasis: #783a3a;
+
+    --bs-light: #f8fafc;
+    --bs-light-rgb: 248, 250, 252;
+    --bs-dark: #303d49;
+    --bs-dark-rgb: 48, 61, 73;
+
+    /* ---------------------------------------------------------
+       Component geometry / depth
+       --------------------------------------------------------- */
+    --bs-border-radius: 0.45rem;
+    --bs-border-radius-sm: 0.35rem;
+    --bs-border-radius-lg: 0.6rem;
+    --bs-border-radius-xl: 0.8rem;
+    --bs-box-shadow: 0 0.25rem 1rem rgba(39, 56, 72, 0.08);
+    --bs-box-shadow-sm: 0 0.125rem 0.45rem rgba(39, 56, 72, 0.07);
+    --bs-box-shadow-lg: 0 0.75rem 2rem rgba(39, 56, 72, 0.12);
+
+    --bs-link-color: #356f9f;
+    --bs-link-hover-color: #285a83;
+    --bs-link-color-rgb: 53, 111, 159;
+
+    --bs-focus-ring-color: rgba(53, 111, 159, 0.18);
+    --bs-focus-ring-width: 0.18rem;
+    --bs-focus-ring-opacity: 1;
+
+    /* ---------------------------------------------------------
+       Jam.py semantic theme tokens
+       --------------------------------------------------------- */
+    --jam-builder-surface: #ffffff;
+    --jam-builder-surface-soft: #eef2f6;
+    --jam-builder-surface-subtle: #f7f9fb;
+    --jam-builder-surface-hover: #f0f5f9;
+    --jam-builder-surface-active: #e6eff6;
+    --jam-builder-surface-selected: #dfeaf2;
+    --jam-builder-text: #263443;
+    --jam-builder-text-muted: #687585;
+    --jam-builder-text-subtle: #8793a0;
+    --jam-builder-border: #d7dee7;
+    --jam-builder-border-strong: #c3ccd6;
+    --jam-builder-primary: #356f9f;
+    --jam-builder-primary-soft: #e7f0f7;
+    --jam-builder-code-bg: #fbfcfd;
+    --jam-builder-command-bg: #eef2f6;
+    --jam-builder-warning-soft: #fbf4e4;
+    --jam-builder-danger-soft: #f8ebeb;
+    --jam-builder-success-soft: #eaf4ee;
+    --jam-builder-transition: 120ms ease;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+}
+
+/* -------------------------------------------------------------
+   Global reading ergonomics
+   ------------------------------------------------------------- */
+html {
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+}
+
+::selection {
+    color: var(--bs-emphasis-color);
+    background: rgba(var(--bs-primary-rgb), 0.16);
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 var(--bs-focus-ring-width) var(--bs-focus-ring-color) !important;
+}
+
+/* Keep decorative text low-contrast, but never reduce normal text too far. */
+.text-body-secondary,
+.text-muted {
+    color: var(--bs-secondary-color) !important;
+}
+
+.text-body-tertiary {
+    color: var(--bs-tertiary-color) !important;
+}
+
+/* -------------------------------------------------------------
+   Typography helpers used throughout Bootstrap
+   ------------------------------------------------------------- */
+.small {
+    font-size: 0.78rem !important;
+}
+
+small,
+.small {
+    letter-spacing: 0.005em;
+}
+
+code,
+kbd,
+pre {
+    font-family: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+code {
+    color: #5c4d83;
+}
+
+kbd {
+    color: #34404c;
+    background: #e6ebf0;
+    border: 1px solid #ccd4dd;
+    box-shadow: 0 1px 0 #c2cad3;
+    border-radius: 0.3rem;
+}
+
+hr {
+    opacity: 1;
+    border-top-color: var(--bs-border-color);
+}
+
+/* -------------------------------------------------------------
+   Buttons: clear hierarchy, quiet chrome
+   ------------------------------------------------------------- */
+.btn {
+    --bs-btn-font-size: 0.82rem;
+    --bs-btn-font-weight: 500;
+    --bs-btn-line-height: 1.35;
+    --bs-btn-padding-x: 0.72rem;
+    --bs-btn-padding-y: 0.42rem;
+    --bs-btn-border-radius: 0.4rem;
+    --bs-btn-box-shadow: none;
+    transition: background-color var(--jam-builder-transition),
+        border-color var(--jam-builder-transition),
+        color var(--jam-builder-transition),
+        box-shadow var(--jam-builder-transition),
+        transform var(--jam-builder-transition);
+}
+
+.btn:hover:not(:disabled):not(.disabled),
+.btn:active:not(:disabled):not(.disabled) {
+    transform: none;
+}
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #2e648f;
+    --bs-btn-hover-border-color: #2b5e86;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #285a83;
+    --bs-btn-active-border-color: #285a83;
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #7ea1bf;
+    --bs-btn-disabled-border-color: #7ea1bf;
+}
+
+.btn-secondary {
+    --bs-btn-color: #344252;
+    --bs-btn-bg: #e8edf2;
+    --bs-btn-border-color: #d1d9e1;
+    --bs-btn-hover-color: #253342;
+    --bs-btn-hover-bg: #dfe6ed;
+    --bs-btn-hover-border-color: #c5cfd9;
+    --bs-btn-active-color: #253342;
+    --bs-btn-active-bg: #d7e0e8;
+    --bs-btn-active-border-color: #bdc8d3;
+}
+
+.btn-light {
+    --bs-btn-color: #3a4857;
+    --bs-btn-bg: #f8fafc;
+    --bs-btn-border-color: #d8e0e7;
+    --bs-btn-hover-color: #2d3b49;
+    --bs-btn-hover-bg: #eef2f6;
+    --bs-btn-hover-border-color: #ccd5de;
+    --bs-btn-active-color: #253342;
+    --bs-btn-active-bg: #e8edf2;
+    --bs-btn-active-border-color: #c7d0da;
+}
+
+.btn-outline-secondary {
+    --bs-btn-color: #536273;
+    --bs-btn-border-color: #cbd4dd;
+    --bs-btn-hover-color: #31404f;
+    --bs-btn-hover-bg: #edf2f6;
+    --bs-btn-hover-border-color: #bbc6d1;
+    --bs-btn-active-color: #2b3948;
+    --bs-btn-active-bg: #e4ebf1;
+    --bs-btn-active-border-color: #b7c2cd;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--bs-primary);
+    --bs-btn-border-color: #b9cedf;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--bs-primary);
+    --bs-btn-hover-border-color: var(--bs-primary);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #2e648f;
+    --bs-btn-active-border-color: #2e648f;
+}
+
+.btn-outline-danger {
+    --bs-btn-color: #9b5050;
+    --bs-btn-border-color: #d9b8b8;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #a45151;
+    --bs-btn-hover-border-color: #a45151;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #8f4747;
+    --bs-btn-active-border-color: #8f4747;
+}
+
+.btn-sm {
+    --bs-btn-padding-y: 0.3rem;
+    --bs-btn-padding-x: 0.55rem;
+    --bs-btn-font-size: 0.76rem;
+    --bs-btn-border-radius: 0.35rem;
+}
+
+.btn-lg {
+    --bs-btn-padding-y: 0.55rem;
+    --bs-btn-padding-x: 0.9rem;
+    --bs-btn-font-size: 0.95rem;
+}
+
+.btn-link {
+    --bs-btn-font-weight: 500;
+}
+
+.btn:disabled,
+.btn.disabled {
+    opacity: 0.5;
+}
+
+.btn-group .btn,
+.btn-group-sm .btn {
+    box-shadow: none;
+}
+
+/* Icon-only controls */
+.btn-icon {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* -------------------------------------------------------------
+   Forms: less glare, stronger field boundaries, comfortable focus
+   ------------------------------------------------------------- */
+.form-label {
+    margin-bottom: 0.28rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #4d5b6a;
+}
+
+.form-text {
+    color: var(--bs-secondary-color);
+    font-size: 0.75rem;
+}
+
+.form-control,
+.form-select,
+.input-group-text {
+    border-color: #cdd6df;
+    background-color: #fff;
+    color: var(--bs-body-color);
+}
+
+.form-control,
+.form-select {
+    min-height: 2.2rem;
+    font-size: 0.84rem;
+}
+
+.form-control::placeholder {
+    color: #98a3ae;
+    opacity: 1;
+}
+
+.form-control:hover,
+.form-select:hover {
+    border-color: #bbc6d1;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #87a9c3;
+    background-color: #fff;
+    color: var(--bs-body-color);
+    box-shadow: 0 0 0 0.18rem rgba(var(--bs-primary-rgb), 0.13);
+}
+
+.form-control:disabled,
+.form-control[readonly],
+.form-select:disabled {
+    background-color: #f0f3f6;
+    color: #758291;
+}
+
+.form-check-input {
+    border-color: #bcc7d2;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.18rem rgba(var(--bs-primary-rgb), 0.14);
+}
+
+.form-check-input:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.form-switch .form-check-input {
+    width: 2.1em;
+}
+
+.input-group-text {
+    color: #657382;
+    background-color: #eef2f6;
+    font-size: 0.8rem;
+}
+
+.invalid-feedback,
+.valid-feedback {
+    font-size: 0.75rem;
+}
+
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+    border-color: #cf9b9b;
+    background-color: #fffafa;
+}
+
+.was-validated .form-control:valid,
+.form-control.is-valid {
+    border-color: #a9cbb8;
+    background-color: #fbfefc;
+}
+
+/* -------------------------------------------------------------
+   Navigation / tabs
+   ------------------------------------------------------------- */
+.nav {
+    --bs-nav-link-color: #536273;
+    --bs-nav-link-hover-color: var(--bs-primary);
+    --bs-nav-link-disabled-color: #9ba6b0;
+    --bs-nav-link-font-size: 0.81rem;
+}
+
+.nav-link {
+    border-radius: 0.4rem;
+    transition: color var(--jam-builder-transition),
+        background-color var(--jam-builder-transition),
+        border-color var(--jam-builder-transition);
+}
+
+.nav-pills {
+    --bs-nav-pills-link-active-bg: var(--bs-primary);
+}
+
+.nav-pills .nav-link {
+    padding: 0.42rem 0.68rem;
+}
+
+.nav-tabs {
+    --bs-nav-tabs-border-color: var(--bs-border-color);
+    --bs-nav-tabs-link-hover-border-color: #d9e1e9 #d9e1e9 var(--bs-border-color);
+    --bs-nav-tabs-link-active-color: var(--bs-emphasis-color);
+    --bs-nav-tabs-link-active-bg: var(--jam-builder-surface);
+    --bs-nav-tabs-link-active-border-color: var(--bs-border-color) var(--bs-border-color) var(--jam-builder-surface);
+}
+
+.nav-tabs .nav-link {
+    padding: 0.42rem 0.68rem;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: var(--jam-builder-surface-hover);
+}
+
+.breadcrumb {
+    --bs-breadcrumb-margin-bottom: 0;
+    --bs-breadcrumb-divider-color: #9aa5b0;
+    --bs-breadcrumb-item-active-color: #5d6977;
+    font-size: 0.76rem;
+}
+
+/* -------------------------------------------------------------
+   Dropdowns / popovers / tooltips
+   ------------------------------------------------------------- */
+.dropdown-menu {
+    --bs-dropdown-color: var(--bs-body-color);
+    --bs-dropdown-bg: #fff;
+    --bs-dropdown-border-color: var(--bs-border-color);
+    --bs-dropdown-link-color: #3d4b59;
+    --bs-dropdown-link-hover-color: #2d3b49;
+    --bs-dropdown-link-hover-bg: #edf2f6;
+    --bs-dropdown-link-active-color: #fff;
+    --bs-dropdown-link-active-bg: var(--bs-primary);
+    --bs-dropdown-link-disabled-color: #9aa5b0;
+    --bs-dropdown-box-shadow: var(--bs-box-shadow-sm);
+    border-radius: 0.48rem;
+    padding: 0.3rem;
+    box-shadow: var(--bs-box-shadow-sm);
+}
+
+.dropdown-item {
+    border-radius: 0.34rem;
+    padding: 0.42rem 0.62rem;
+    font-size: 0.81rem;
+}
+
+.dropdown-header {
+    padding: 0.45rem 0.62rem 0.3rem;
+    color: var(--bs-tertiary-color);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.dropdown-divider {
+    border-top-color: var(--bs-border-color);
+    margin: 0.3rem 0;
+}
+
+.tooltip {
+    --bs-tooltip-bg: #263443;
+    --bs-tooltip-color: #f8fafc;
+    --bs-tooltip-opacity: 0.98;
+    --bs-tooltip-font-size: 0.73rem;
+}
+
+.popover {
+    --bs-popover-bg: #fff;
+    --bs-popover-border-color: var(--bs-border-color);
+    --bs-popover-header-bg: #eef2f6;
+    --bs-popover-header-color: var(--bs-emphasis-color);
+    --bs-popover-body-color: var(--bs-body-color);
+    --bs-popover-box-shadow: var(--bs-box-shadow);
+    border-radius: 0.55rem;
+    box-shadow: var(--bs-box-shadow);
+}
+
+/* -------------------------------------------------------------
+   Tables: readable density rather than spreadsheet glare
+   ------------------------------------------------------------- */
+.table {
+    --bs-table-color: var(--bs-body-color);
+    --bs-table-bg: transparent;
+    --bs-table-border-color: #dde3e9;
+    --bs-table-hover-bg: #f3f7fa;
+    --bs-table-hover-color: var(--bs-body-color);
+    font-size: 0.81rem;
+}
+
+.table > :not(caption) > * > * {
+    padding: 0.48rem 0.58rem;
+}
+
+.table thead th {
+    color: #536273;
+    background: #eef2f6;
+    font-weight: 650;
+    border-bottom-color: #cfd7df;
+}
+
+.table tbody tr {
+    transition: background-color var(--jam-builder-transition);
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-accent-bg: rgba(80, 100, 120, 0.025);
+}
+
+.table-group-divider {
+    border-top-color: #cfd7df;
+}
+
+.table-responsive {
+    scrollbar-color: #c2ccd6 transparent;
+    scrollbar-width: thin;
+}
+
+/* -------------------------------------------------------------
+   Cards / list groups / accordions
+   ------------------------------------------------------------- */
+.card {
+    --bs-card-bg: #fff;
+    --bs-card-border-color: var(--bs-border-color);
+    --bs-card-border-radius: 0.5rem;
+    --bs-card-box-shadow: none;
+    color: var(--bs-body-color);
+}
+
+.card-header {
+    background: #eef2f6;
+    border-bottom-color: var(--bs-border-color);
+    font-weight: 600;
+}
+
+.card-footer {
+    background: #f6f8fa;
+    border-top-color: var(--bs-border-color);
+}
+
+.list-group {
+    --bs-list-group-color: var(--bs-body-color);
+    --bs-list-group-bg: #fff;
+    --bs-list-group-border-color: var(--bs-border-color);
+    --bs-list-group-hover-bg: #f1f5f8;
+    --bs-list-group-active-bg: var(--bs-primary);
+    --bs-list-group-active-border-color: var(--bs-primary);
+    --bs-list-group-action-color: #465463;
+}
+
+.list-group-item {
+    font-size: 0.81rem;
+}
+
+.accordion {
+    --bs-accordion-color: var(--bs-body-color);
+    --bs-accordion-bg: #fff;
+    --bs-accordion-border-color: var(--bs-border-color);
+    --bs-accordion-btn-color: var(--bs-body-color);
+    --bs-accordion-btn-bg: #eef2f6;
+    --bs-accordion-active-color: #234d70;
+    --bs-accordion-active-bg: #e7f0f7;
+}
+
+.accordion-button {
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.accordion-button:not(.collapsed) {
+    box-shadow: none;
+}
+
+/* -------------------------------------------------------------
+   Alerts / badges / status
+   ------------------------------------------------------------- */
+.alert {
+    --bs-alert-padding-x: 0.75rem;
+    --bs-alert-padding-y: 0.6rem;
+    --bs-alert-margin-bottom: 0.75rem;
+    --bs-alert-border-radius: 0.45rem;
+    border-width: 1px;
+    font-size: 0.81rem;
+}
+
+.badge {
+    --bs-badge-font-size: 0.68rem;
+    --bs-badge-font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.text-bg-light {
+    color: #556372 !important;
+    background-color: #eef2f6 !important;
+}
+
+.text-bg-secondary {
+    color: #fff !important;
+    background-color: #667586 !important;
+}
+
+/* -------------------------------------------------------------
+   Progress / spinner / pagination
+   ------------------------------------------------------------- */
+.progress {
+    --bs-progress-bg: #e5eaf0;
+    --bs-progress-border-radius: 0.35rem;
+    --bs-progress-height: 0.55rem;
+}
+
+.spinner-border {
+    --bs-spinner-width: 1rem;
+    --bs-spinner-height: 1rem;
+    --bs-spinner-border-width: 0.14rem;
+}
+
+.pagination {
+    --bs-pagination-color: #526172;
+    --bs-pagination-bg: #fff;
+    --bs-pagination-border-color: var(--bs-border-color);
+    --bs-pagination-hover-color: #31404f;
+    --bs-pagination-hover-bg: #edf2f6;
+    --bs-pagination-hover-border-color: #c6d0da;
+    --bs-pagination-focus-color: #31404f;
+    --bs-pagination-focus-bg: #edf2f6;
+    --bs-pagination-focus-box-shadow: 0 0 0 0.18rem rgba(var(--bs-primary-rgb), 0.13);
+    --bs-pagination-active-color: #fff;
+    --bs-pagination-active-bg: var(--bs-primary);
+    --bs-pagination-active-border-color: var(--bs-primary);
+}
+
+/* -------------------------------------------------------------
+   Modal / offcanvas / toast
+   ------------------------------------------------------------- */
+.modal-content,
+.offcanvas,
+.toast {
+    background-color: #fff;
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+    box-shadow: var(--bs-box-shadow);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--bs-border-color);
+}
+
+.modal-header {
+    background: #eef2f6;
+}
+
+.modal-title {
+    font-size: 0.98rem;
+    font-weight: 650;
+}
+
+.offcanvas-header {
+    border-bottom: 1px solid var(--bs-border-color);
+    background: #eef2f6;
+}
+
+.toast-header {
+    color: var(--bs-body-color);
+    background: #eef2f6;
+    border-bottom-color: var(--bs-border-color);
+}
+
+/* -------------------------------------------------------------
+   Close buttons
+   ------------------------------------------------------------- */
+.btn-close {
+    opacity: 0.58;
+}
+
+.btn-close:hover {
+    opacity: 0.9;
+}
+
+/* -------------------------------------------------------------
+   Utilities / scrollbars
+   ------------------------------------------------------------- */
+.overflow-auto,
+.overflow-scroll {
+    scrollbar-color: #c2ccd6 transparent;
+    scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c4ced8;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #aebbc8;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+/* -------------------------------------------------------------
+   Bootstrap helper surfaces used by Jam.py
+   ------------------------------------------------------------- */
+.bg-body {
+    background-color: var(--bs-body-bg) !important;
+}
+
+.bg-body-secondary {
+    background-color: var(--bs-secondary-bg) !important;
+}
+
+.bg-body-tertiary {
+    background-color: var(--bs-tertiary-bg) !important;
+}
+
+.border,
+.border-top,
+.border-end,
+.border-bottom,
+.border-start {
+    border-color: var(--bs-border-color) !important;
+}
+
+.shadow-sm {
+    box-shadow: var(--bs-box-shadow-sm) !important;
+}
+
+.shadow {
+    box-shadow: var(--bs-box-shadow) !important;
+}
+
+.shadow-lg {
+    box-shadow: var(--bs-box-shadow-lg) !important;
+}
+
+/* =============================================================
+   Jam.py V7 builder theme
+   ============================================================= */
+
+.builder-app,
+.builder-app .container,
+.builder-app .container-fluid {
+    color: var(--jam-builder-text);
+}
+
+.builder-app {
+    background: var(--bs-body-bg);
+}
+
+.builder-topbar,
+.builder-panel-heading,
+.builder-workspace-label,
+#center-heading,
+.builder-commandbar,
+.editor-footer {
+    background: var(--jam-builder-surface-soft);
+    border-color: var(--jam-builder-border) !important;
+}
+
+.builder-topbar {
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.builder-brand {
+    color: var(--bs-emphasis-color);
+}
+
+.builder-brand-mark {
+    color: var(--bs-primary);
+    background: var(--jam-builder-primary-soft);
+    border-color: #c9dbe9;
+}
+
+.builder-hint,
+.builder-short-status {
+    color: var(--jam-builder-text-muted);
+}
+
+.builder-task-tabs .nav-link {
+    color: #556575;
+}
+
+.builder-task-tabs .nav-link:hover {
+    background: rgba(var(--bs-primary-rgb), 0.06);
+}
+
+.builder-task-tabs .nav-link.active {
+    background: var(--bs-primary);
+    color: #fff;
+}
+
+#tab-content {
+    background: var(--jam-builder-surface);
+    border-color: var(--jam-builder-border) !important;
+}
+
+#left-panel,
+#right-panel,
+#center-panel {
+    background: var(--jam-builder-surface);
+}
+
+.builder-panel-heading {
+    color: var(--jam-builder-text);
+}
+
+.builder-panel-heading .badge {
+    color: #687585 !important;
+    background-color: #f8fafc !important;
+    border-color: #d8e0e7 !important;
+}
+
+/* Explorer search */
+.builder-tree-search .input-group-text {
+    background: #eef2f6;
+    color: #687585;
+}
+
+.builder-tree-search .form-control {
+    background: #fff;
+}
+
+#builder-search-hint {
+    color: #8b97a3 !important;
+}
+
+#builder-search-count {
+    color: #657382 !important;
+    background: #eef2f6 !important;
+    border-color: #d5dde5 !important;
+}
+
+/* Tree: comfortable hit targets + quiet selection */
+#tree-panel {
+    background: var(--jam-builder-surface);
+}
+
+#tree-panel .dbtree ul {
+    list-style: none;
+}
+
+#tree-panel .dbtree li > a,
+#tree-panel .dbtree li > span {
+    color: #4e5d6c;
+    transition: color var(--jam-builder-transition),
+        background-color var(--jam-builder-transition);
+}
+
+#tree-panel .dbtree li > a:hover,
+#tree-panel .dbtree li > span:hover {
+    color: #31404f;
+    background: var(--jam-builder-surface-hover);
+    text-decoration: none;
+}
+
+#tree-panel .dbtree .active,
+#tree-panel .dbtree li.selected > a,
+#tree-panel .dbtree li.selected > span {
+    color: #234d70;
+    background: var(--jam-builder-surface-selected);
+}
+
+#tree-panel .builder-tree-match {
+    color: #234d70;
+    background: var(--jam-builder-primary-soft);
+}
+
+/* Center context */
+.builder-breadcrumbs {
+    color: #74808d;
+}
+
+.builder-breadcrumb-link {
+    color: #5d6c7b;
+}
+
+.builder-breadcrumb-link:hover {
+    color: var(--bs-primary);
+}
+
+.builder-breadcrumb-separator {
+    color: #a2adb8;
+}
+
+.builder-title,
+.editor-title {
+    color: var(--bs-emphasis-color);
+}
+
+.builder-task-info {
+    color: #72808e !important;
+}
+
+#builder-context-badge {
+    color: #657382 !important;
+    background: #eef2f6 !important;
+    border-color: #d6dee6 !important;
+}
+
+/* Action panel */
+#btns-panel {
+    background: var(--jam-builder-surface);
+}
+
+#btns-panel .btn.vert-btn {
+    color: #4d5c6b;
+    background: transparent;
+    border-color: transparent;
+    text-align: left;
+}
+
+#btns-panel .btn.vert-btn:hover:not(:disabled) {
+    color: #2f4050;
+    background: #edf2f6;
+    border-color: #d9e1e8;
+}
+
+#btns-panel .btn.vert-btn:focus-visible {
+    border-color: #a9bfd1;
+}
+
+#btns-panel .btn.new:not(:disabled) {
+    color: #fff;
+    background: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+#btns-panel .btn.new:hover:not(:disabled) {
+    background: #2e648f;
+    border-color: #2e648f;
+}
+
+#btns-panel .btn[class*="delete"]:not(:disabled) {
+    color: #975050;
+}
+
+#btns-panel .btn[class*="delete"]:hover:not(:disabled) {
+    color: #8c4545;
+    background: var(--jam-builder-danger-soft);
+    border-color: #dfc2c2;
+}
+
+/* Generated form/list footers */
+.builder-commandbar {
+    color: var(--jam-builder-text-muted);
+}
+
+.builder-commandbar .btn:not(.btn-primary):not(.btn-danger):not(.btn-outline-danger) {
+    color: #516071;
+}
+
+.builder-commandbar .btn:hover:not(:disabled) {
+    background-color: #e6ecf1;
+}
+
+.builder-commandbar .btn-primary:hover:not(:disabled) {
+    background-color: #2e648f;
+}
+
+.builder-commandbar .dropdown-toggle {
+    border-color: #cbd4dd;
+    background: #f8fafc;
+}
+
+/* Generated forms/grids */
+.builder-app .form-body,
+.builder-app .view-table,
+.builder-app .edit-body,
+.builder-app .edit-detail,
+.builder-app .view-fields {
+    color: var(--jam-builder-text);
+}
+
+.builder-app .form-header,
+.builder-app .title {
+    color: var(--bs-emphasis-color);
+}
+
+.builder-app .dbtable,
+.builder-app .dbtable table,
+.builder-app .inner-table {
+    background: #fff;
+}
+
+.builder-app .dbtable th,
+.builder-app .dbtable .header {
+    color: #536273;
+    background: #eef2f6;
+}
+
+.builder-app .dbtable tr.table-focused {
+    box-shadow: inset 0 -2px 0 rgba(53, 111, 159, 0.45);
+}
+
+.builder-app .dbtable tr.selected td,
+.builder-app .dbtable tr.active td {
+    background: var(--jam-builder-surface-selected);
+}
+
+/* Field editor */
+.sys_fields_editor .nav-tabs,
+.sys_fields_editor .nav-pills {
+    border-color: var(--jam-builder-border);
+}
+
+#fields-left-box,
+#fields-right-box {
+    background: #f7f9fb;
+    border-color: var(--jam-builder-border) !important;
+}
+
+#fields-center-box .btn {
+    background: #f8fafc;
+}
+
+#fields-center-box .btn:hover {
+    background: #eaf0f5;
+}
+
+#field-bands li.active {
+    background: #edf2f6;
+    border-color: #ced7e0;
+}
+
+#field-bands li a.active {
+    color: #234d70;
+}
+
+/* Informational / warning surfaces */
+.edit-message {
+    color: #6c511a;
+    background: var(--jam-builder-warning-soft);
+    border-color: #e7d39f;
+}
+
+.edit-message .text-danger {
+    color: #765b21 !important;
+}
+
+/* Code editor shell: keep editor itself visually stable */
+#code-editor {
+    background: var(--jam-builder-code-bg);
+}
+
+#editor-box {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    background: #fff;
+    border-color: var(--jam-builder-border);
+}
+
+#editor {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto !important;
+    min-height: 0;
+    font-size: 14px;
+}
+
+.editor-footer {
+    color: var(--jam-builder-text-muted);
+}
+
+#editor-tabs .nav-tabs {
+    background: #eef2f6;
+}
+
+#info-grids {
+    background: #f7f9fb;
+    border-color: var(--jam-builder-border) !important;
+}
+
+/* Builder recent menu */
+.builder-recent-menu .dropdown-item {
+    color: #465463;
+}
+
+.builder-recent-menu .dropdown-item:hover {
+    background: #edf2f6;
+}
+
+/* Builder navigation menus */
+.builder-inspector-options-menu {
+    border-color: var(--jam-builder-border);
+    box-shadow: var(--bs-box-shadow-sm);
+}
+
+/* Help links: understated, discoverable */
+.help-btn {
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* -------------------------------------------------------------
+   Accessibility / visual fatigue safeguards
+   ------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+/* Keep wide forms from becoming unnecessarily dense on large screens. */
+@media screen and (min-width: 1400px) {
+    .builder-app .form-control,
+    .builder-app .form-select {
+        min-height: 2.25rem;
+    }
+}
+
+/* Narrow viewport: preserve touch target size while reducing visual padding. */
+@media screen and (max-width: 800px) {
+    :root {
+        --bs-body-font-size: 0.9rem;
+    }
+
+    .btn {
+        --bs-btn-padding-y: 0.46rem;
+        --bs-btn-padding-x: 0.7rem;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 2.35rem;
+    }
+}
+
+/* Command Palette Styling */
+
+#builder-command-palette-modal .modal-content {
+    border-radius: var(--bs-border-radius-lg, 0.6rem);
+}
+
+#builder-command-results .list-group-item {
+    border: 0;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    transition: background-color var(--jam-builder-transition, 120ms ease);
+}
+
+#builder-command-results .list-group-item.active,
+#builder-command-results .list-group-item:hover {
+    background-color: var(--jam-builder-surface-selected, #dfeaf2);
+    color: var(--jam-builder-text, #263443);
+}
+
+#builder-command-results .command-icon {
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--bs-border-radius-sm, 0.35rem);
+    background: var(--jam-builder-surface-soft, #eef2f6);
+}

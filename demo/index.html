@@ -9,6 +9,7 @@
         <link href="jam/css/bs5/bootstrap-zephyr.css" rel="stylesheet">
         <link href="jam/css/bs5/bootstrap-icons.css" rel="stylesheet">
         <!--<link href="jam/css/datepicker.css" rel="stylesheet">-->
+        <link href="jam/css/bs5/jam-builder-theme.css" rel="stylesheet">
 		<link href="jam/css/zebra_datepicker/bootstrap/zebra_datepicker.min.css" rel="stylesheet">
         <link href="jam/css/jam.css" rel="stylesheet">
         <link href="css/project.css" rel="stylesheet">
@@ -24,10 +25,22 @@
                 <div class="collapse navbar-collapse" id="navbar-content">
                     <ul id="menu" class="navbar-nav me-auto mb-2 mb-lg-0">
                     </ul>
-                    <div class="d-flex pe-2 justify-content-end">
+                    <!-- <div class="d-flex pe-2 justify-content-end">
                         <span id="user-info" class="navbar-text p-2"></span>
                         <button id="log-out" class="btn btn-secondary" type="button" style="display: none"><i class="bi bi-box-arrow-right"></i></button>
-                    </div>
+                    </div> -->
+                    <div class="builder-user-area d-flex align-items-center gap-2">
+						<div class="user-avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 30px; height: 30px; font-size: 0.9rem;">
+							<i class="bi bi-person-fill"></i>
+						</div>
+						<div class="d-flex flex-column">
+							<span id="user-info" class="fw-semibold text-dark text-truncate" style="max-width: 180px;">Loading...</span>
+							<span class="text-muted" style="font-size: 0.75rem;">Active Session</span>
+						</div>
+						<button id="log-out" class="btn btn-outline-danger btn-sm ms-auto d-flex align-items-center gap-1 px-2 py-1 d-none" style="font-size: 0.8rem;">
+							<i class="bi bi-box-arrow-right"></i><span>Logout</span>
+						</button>
+					</div>
                 </div>
               </div>
             </nav>

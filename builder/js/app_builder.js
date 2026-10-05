@@ -4508,7 +4508,8 @@ function Events14() { // app_builder.catalogs.sys_code_editor
 				let base_url;
 				if (ext === 'py' || ext === 'js') {
 					const section = ext === 'py' ? 'server' : 'client';
-					base_url = 'https://jampy-docs-v7.readthedocs.io/en/latest/refs/${section}/item/';
+					//base_url = `https://jampy-docs-v7.readthedocs.io/en/latest/refs/${section}/item/`;
+					base_url = 'https://jampy-docs-v7.readthedocs.io/en/latest/refs/' + section + '/item/';
 				}
 	
 	

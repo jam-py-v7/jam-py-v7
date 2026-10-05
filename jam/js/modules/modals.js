@@ -74,8 +74,17 @@ class ModalForm {
         form.addEventListener('hide.bs.modal', function(event) {
             event.stopPropagation();
         });
+		
+		//new code - bug fix
         form.addEventListener('hidden.bs.modal', function(event) {
-            event.stopPropagation();
+            event.stopPropagation();            
+            if (self.modal_forms.stack.length === 0) {
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open').css({
+                    overflow: '',
+                    paddingRight: ''
+                });
+            }
         });
 
         this.form_object.show();
@@ -237,14 +246,27 @@ class ModalForms {
 
     destroy_modal_form(modal_form) {
         if (modal_form === this.active_modal_form) {
-            this.active_modal_form.destroying = true;
+            modal_form.destroying = true;
             if (modal_form.item) {
                 modal_form.item['modal_' + modal_form.form_type + '_object'] = undefined;
             }
             modal_form.form_object.hide();
             modal_form.$modal.remove();
-            modal_form.$active_element.focus();
+            
+            if (modal_form.$active_element && modal_form.$active_element.length && document.body.contains(modal_form.$active_element.get(0))) {
+                modal_form.$active_element.focus();
+            }
+            
             this.stack.pop();
+
+            //bug fix
+            if (this.stack.length === 0) {
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open').css({
+                    overflow: '',
+                    paddingRight: ''
+                });
+            }
         }
     }
 }

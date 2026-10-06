@@ -376,10 +376,12 @@ function Events10() { // demo.catalogs.customers
 	function on_edit_form_created(item) {
 		item.edit_form.find('#prev-btn').click(function() {
 			item.prior();
+			item.edit();
 		});
 	
 		item.edit_form.find('#next-btn').click(function() {
 			item.next();
+			item.edit();
 		});
 	}
 	this.on_view_form_created = on_view_form_created;

@@ -27,7 +27,7 @@ jobs:
       - name: Read package version
         id: version
         run: |
-          VERSION=$(python -c "import jam; print(jam.__version__)")
+          VERSION=$(python -c "import jam; print('.'.join(map(str, jam.__version__)))")
           echo "Version: $VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 

@@ -372,15 +372,46 @@ function Events10() { // demo.catalogs.customers
 		task.customers_report.customers.value = item.selections;
 		task.customers_report.print(false);
 	}
+	
+	function on_edit_form_created(item) {
+		item.edit_form.find('#prev-btn').click(function() {
+			item.prior();
+			item.edit();
+		});
+	
+		item.edit_form.find('#next-btn').click(function() {
+			item.next();
+			item.edit();
+		});
+	}
 	this.on_view_form_created = on_view_form_created;
 	this.send_email = send_email;
 	this.print = print;
+	this.on_edit_form_created = on_edit_form_created;
 }
 
 task.events.events10 = new Events10();
 
 function Events15() { // demo.catalogs.tracks 
 
+	function on_edit_form_created(item) {
+		item.edit_options.width = 900;
+	
+		item.create_inputs(item.edit_form.find("#edit-top"), {
+			fields: ['name', 'album'],
+			col_count: 2,
+			label_on_top: true
+		});
+	
+		item.create_inputs(item.edit_form.find("#edit-left"), {
+			fields: ['artist', 'composer', 'media_type', 'genre']
+		});
+	
+		item.create_inputs(item.edit_form.find("#edit-right"), {
+			fields: ['milliseconds', 'bytes', 'tracks_sold', 'unitprice']
+		});
+	}
+	
 	function on_view_form_created(item) {
 		if (!item.lookup_field) {
 			item.table_options.height -= 200;
@@ -489,6 +520,7 @@ function Events15() { // demo.catalogs.tracks
 			copy.append_record();
 		}
 	}
+	this.on_edit_form_created = on_edit_form_created;
 	this.on_view_form_created = on_view_form_created;
 	this.on_after_scroll = on_after_scroll;
 	this.show_invoice = show_invoice;

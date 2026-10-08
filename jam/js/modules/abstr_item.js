@@ -1169,7 +1169,7 @@ class AbsrtactItem {
                     .data('key', key)
                     .css("min-width", options.button_min_width)
                     .html(key)
-                    .click(function(e) {
+                    /*.click(function(e) {
                         e.preventDefault();
                         e.stopPropagation();
                         var key = $(this).data('key');
@@ -1188,7 +1188,29 @@ class AbsrtactItem {
                             },
                             100
                         );
-                    })
+                    })*/
+					// new code - bug fix
+					.click(function(e) {
+						e.preventDefault();
+						e.stopPropagation();
+						var key = $(this).data('key');
+						setTimeout(function() {
+								if (options.hide) {
+									modal_object.close_form();
+								}
+								try {
+									if (buttons[key]) {
+										buttons[key].call(self);
+									}
+								}
+								catch (e) {
+									console.error(e);
+								}
+							},
+							100
+						);
+					});
+					
                     let btn_class = 'btn-secondary';
                     if (options.button_class[key]) {
                         btn_class = options.button_class[key];

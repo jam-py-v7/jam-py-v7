@@ -487,8 +487,11 @@ function Events1() { // app_builder
 			item.view_form.find(".modal-body").css('padding', 0);
 			$("#title-left").html('<h5 class="editor-title">' + '<span>' + task.cur_item_title + '</span>' + '</h5>');
 			item.view_form.find("#select-btn").hide()
-			table_height = task.center_panel.height() - 104;
-			// item.view_form.find("#title-right").addClass('admin-task-info');
+			//table_height = task.center_panel.height() - 104;
+	
+			var window_height = $(window).height() - ($('#task-tabs').offset().top + $('#task-tabs').outerHeight(true)) - 30;
+				table_height = window_height - 100;
+				
 			update_task_info(task);
 		}
 	
@@ -4508,7 +4511,8 @@ function Events14() { // app_builder.catalogs.sys_code_editor
 				let base_url;
 				if (ext === 'py' || ext === 'js') {
 					const section = ext === 'py' ? 'server' : 'client';
-					base_url = 'https://jampy-docs-v7.readthedocs.io/en/latest/refs/${section}/item/';
+					//base_url = `https://jampy-docs-v7.readthedocs.io/en/latest/refs/${section}/item/`;
+					base_url = 'https://jampy-docs-v7.readthedocs.io/en/latest/refs/' + section + '/item/';
 				}
 	
 	
@@ -5427,6 +5431,7 @@ function Events15() { // app_builder.catalogs.sys_fields_editor
 	
 	function on_view_form_shown(item) {
 		set_editor_type(item);
+		item.view_form.find('.col-md-6').removeClass('col-md-6').addClass('col-md-7');
 	}
 	
 	function set_layout(item) {

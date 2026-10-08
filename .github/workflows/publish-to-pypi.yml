@@ -157,10 +157,10 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.14"
-            cache: 'pip'
-            cache-dependency-path: |
-              utils/requirements.txt
-              **/requirements.txt
+          cache: 'pip'
+          cache-dependency-path: |
+            utils/requirements.txt
+            **/requirements.txt
 
       # Replace this with your existing installation/build steps
       - name: Install dependencies

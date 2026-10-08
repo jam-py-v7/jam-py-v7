@@ -169,23 +169,23 @@ jobs:
           python -m pip install --upgrade pip
 
           # Put your existing requirements/install commands here
-            pip install -r utils/requirements.txt
+          pip install -r utils/requirements.txt
 
-        - name: Prepare build folder (Windows)
-          if: matrix.os == 'windows-latest'
-          run: |
-            # Copy jam folder to demo
-            xcopy jam demo\jam\ /E /H /C /I /Y
-            # Copy utility scripts to demo
-            xcopy utils\run.py demo\ /Y
-            xcopy utils\asgi.py demo\ /Y
-          shell: cmd
+      - name: Prepare build folder (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          # Copy jam folder to demo
+          xcopy jam demo\jam\ /E /H /C /I /Y
+          # Copy utility scripts to demo
+          xcopy utils\run.py demo\ /Y
+          xcopy utils\asgi.py demo\ /Y
+        shell: cmd
 
-        - name: Build Executable with PyInstaller
-          run: |
-            cd demo
-            pyinstaller.exe -c -D --noupx --noconfirm --hidden-import oracledb --hidden-import duckdb --hidden-import databricks-sql-connector --hidden-import psycopg2 --hidden-import mysql-connector  --hidden-import pymssql --hidden-import sqlalchemy --hidden-import pyjsparser --hidden-import smtplib --hidden-import esprima --hidden-import jsmin --hidden-import sqlparse --hidden-import standard-imghdr --hidden-import werkzeug --hidden-import uvicorn --hidden-import uvicorn.logging --hidden-import uvicorn.loops --hidden-import uvicorn.loops.auto --hidden-import uvicorn.protocols --hidden-import uvicorn.protocols.http --hidden-import uvicorn.protocols.http.auto --hidden-import uvicorn.protocols.websockets --hidden-import uvicorn.protocols.websockets.auto --hidden-import uvicorn.lifespan --hidden-import uvicorn.lifespan.on --hidden-import asgiref --hidden-import asgiref.wsgi --add-data "demo.sqlite;." --add-data "admin.sqlite;." --add-data "js;js" --add-data "css;css" --add-data "reports;reports" --add-data "jam;jam" --add-data "static;static" --add-data "index.html;." --add-data "templates.html;." --add-data "asgi.py;." run.py --name=jampy_windows_x86_64
-          shell: cmd
+      - name: Build Executable with PyInstaller
+        run: |
+          cd demo
+          pyinstaller.exe -c -D --noupx --noconfirm --hidden-import oracledb --hidden-import duckdb --hidden-import databricks-sql-connector --hidden-import psycopg2 --hidden-import mysql-connector  --hidden-import pymssql --hidden-import sqlalchemy --hidden-import pyjsparser --hidden-import smtplib --hidden-import esprima --hidden-import jsmin --hidden-import sqlparse --hidden-import standard-imghdr --hidden-import werkzeug --hidden-import uvicorn --hidden-import uvicorn.logging --hidden-import uvicorn.loops --hidden-import uvicorn.loops.auto --hidden-import uvicorn.protocols --hidden-import uvicorn.protocols.http --hidden-import uvicorn.protocols.http.auto --hidden-import uvicorn.protocols.websockets --hidden-import uvicorn.protocols.websockets.auto --hidden-import uvicorn.lifespan --hidden-import uvicorn.lifespan.on --hidden-import asgiref --hidden-import asgiref.wsgi --add-data "demo.sqlite;." --add-data "admin.sqlite;." --add-data "js;js" --add-data "css;css" --add-data "reports;reports" --add-data "jam;jam" --add-data "static;static" --add-data "index.html;." --add-data "templates.html;." --add-data "asgi.py;." run.py --name=jampy_windows_x86_64
+        shell: cmd
 
       - name: Create ZIP package
         shell: powershell

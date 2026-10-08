@@ -64,12 +64,6 @@ jobs:
         pyinstaller.exe -c -D --noupx --noconfirm --hidden-import oracledb --hidden-import duckdb --hidden-import databricks-sql-connector --hidden-import psycopg2 --hidden-import mysql-connector  --hidden-import pymssql --hidden-import sqlalchemy --hidden-import pyjsparser --hidden-import smtplib --hidden-import esprima --hidden-import jsmin --hidden-import sqlparse --hidden-import standard-imghdr --hidden-import werkzeug --hidden-import uvicorn --hidden-import uvicorn.logging --hidden-import uvicorn.loops --hidden-import uvicorn.loops.auto --hidden-import uvicorn.protocols --hidden-import uvicorn.protocols.http --hidden-import uvicorn.protocols.http.auto --hidden-import uvicorn.protocols.websockets --hidden-import uvicorn.protocols.websockets.auto --hidden-import uvicorn.lifespan --hidden-import uvicorn.lifespan.on --hidden-import asgiref --hidden-import asgiref.wsgi --add-data "demo.sqlite;." --add-data "admin.sqlite;." --add-data "js;js" --add-data "css;css" --add-data "reports;reports" --add-data "jam;jam" --add-data "static;static" --add-data "index.html;." --add-data "templates.html;." --add-data "asgi.py;." run.py --name=jampy_windows_x86_64
       shell: cmd
           
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: jampy-windows-x86-64
-        path: demo/dist/jampy_windows_x86_64/*
-
     - name: Create ZIP package
       if: startsWith(github.ref, 'refs/tags/')
       shell: powershell
@@ -78,15 +72,25 @@ jobs:
           -Path demo/dist/jampy_windows_x86_64/* `
           -DestinationPath jampy_windows_x86_64.zip
 
-#    - name: Create GitHub Release
-#      if: startsWith(github.ref, 'refs/tags/')
-#      uses: softprops/action-gh-release@v2
-#      with:
-#        files: jampy_windows_x86_64.zip
-#        generate_release_notes: true
-
     - name: Upload Release Asset
       if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v2
-      with:
-        files: jampy_windows_x86_64.zip
+      env:
+        GH_TOKEN: ${{ github.token }}
+      shell: bash
+      run: |
+        echo "Waiting for GitHub Release $GITHUB_REF_NAME..."
+
+        for i in {1..30}; do
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release found."
+            break
+          fi
+
+          echo "Release not available yet. Waiting 10 seconds..."
+          sleep 10
+        done
+
+        gh release upload \
+          "$GITHUB_REF_NAME" \
+          jampy_windows_x86_64.zip \
+          --repo "$GITHUB_REPOSITORY"

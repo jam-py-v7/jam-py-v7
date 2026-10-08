@@ -81,12 +81,20 @@ def main():
 
     files = []
 
-    # JS modules
-    folder = os.path.join(ROOT, 'jam', 'js', 'modules')
+    # JS files directly in jam/js
+    js_folder = os.path.join(ROOT, 'jam', 'js')
 
-    for name in os.listdir(folder):
+    for name in os.listdir(js_folder):
         if name.endswith('.js') and not name.endswith('.min.js'):
-            files.append(os.path.join(folder, name))
+            files.append(os.path.join(js_folder, name))
+
+
+    # JS files directly in jam/js/modules
+    modules_folder = os.path.join(ROOT, 'jam', 'js', 'modules')
+
+    for name in os.listdir(modules_folder):
+        if name.endswith('.js') and not name.endswith('.min.js'):
+            files.append(os.path.join(modules_folder, name))
 
     # Core CSS
     files += [

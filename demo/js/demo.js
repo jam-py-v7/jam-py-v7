@@ -373,64 +373,21 @@ function Events10() { // demo.catalogs.customers
 		task.customers_report.print(false);
 	}
 	
-	// function on_edit_form_created(item) {
-	//	 item.edit_form.find('#prev-btn').click(function() {
-	//		 item.prior();
-	//		 item.edit();
-	//	 });
-	
-	//	 item.edit_form.find('#next-btn').click(function() {
-	//		 item.next();
-	//		 item.edit();
-	//	 });
-	
-	// item.question('text message',
-	//				 function() {
-	//					 // user clicked OK:
-	//					 // do the ok actions
-	//					 try {
-	//						 item.post();
-	//						 item.close_edit_form();
-	//						 item.warning('Success save!');
-	//						 if(task.user_info.role_id === 3) {
-	//							 item.close_view_form();
-	//						 }
-	//					 }
-	//					 catch (e) {
-	//						 item.alert_error(error);
-	//					 }},
-	//				 function() {
-	//					 // user clicked Cancel, resume editing
-	//					 item.edit();
-	//					 item.enable_edit_form();
-	//				 });
-	// }
 	function on_edit_form_created(item) {
-		var save_btn = item.add_edit_button('Save and continue');
-		save_btn.click(function() { ask(item) });
-	}
+		item.edit_form.find('#prev-btn').click(function() {
+			item.prior();
+			item.edit();
+		});
 	
-	function ask(item) {
-		item.question('Save record?',
-		function() {
-			if (item.is_changing()) {
-				item.disable_edit_form();
-				item.post();
-				item.apply(function(error){
-					if (error) {
-						item.alert_error(error);
-					}
-					item.edit();
-					item.enable_edit_form();
-				});
-			}
+		item.edit_form.find('#next-btn').click(function() {
+			item.next();
+			item.edit();
 		});
 	}
 	this.on_view_form_created = on_view_form_created;
 	this.send_email = send_email;
 	this.print = print;
 	this.on_edit_form_created = on_edit_form_created;
-	this.ask = ask;
 }
 
 task.events.events10 = new Events10();

@@ -409,10 +409,10 @@ class DBField(object):
             data_type = lookup_field.data_type
             result = self.lookup_data
             if data_type == consts.DATE:
-                if isinstance(result, text_type):
+                if isinstance(result, str):
                     result = consts.convert_date(result)
             elif data_type == consts.DATETIME:
-                if isinstance(result, text_type):
+                if isinstance(result, str):
                     result = consts.convert_date_time(result)
             elif data_type == consts.BOOLEAN:
                 result = bool(result)

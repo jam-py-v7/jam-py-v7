@@ -272,7 +272,6 @@ function Events0() { // app_builder
 		$('#center-panel .form-header').hide();
 		if (dbtable.length) {
 			table = dbtable.data('dbtable');
-			console.log(table);
 			if (table.height() !== height - footer_height) {
 				table.height(height - footer_height - 20);
 			}

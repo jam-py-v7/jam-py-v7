@@ -7,25 +7,25 @@ on:
       - main
 
 jobs:
-  release:
-    # Only release when develop was actually merged into main
+
+  # ============================================================
+  # Read version and create release tag
+  # ============================================================
+
+  prepare:
     if: >
       github.event.pull_request.merged == true &&
       github.event.pull_request.head.ref == 'develop'
 
-    name: Build and release
     runs-on: ubuntu-latest
 
     permissions:
       contents: write
-      id-token: write
 
-    environment:
-      name: pypi
-      url: https://pypi.org/p/jam-py-v7
+    outputs:
+      version: ${{ steps.version.outputs.version }}
 
     steps:
-
       - name: Checkout merged main
         uses: actions/checkout@v6
         with:
@@ -36,10 +36,6 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.14"
-
-      - name: Install build
-        run: |
-          python -m pip install build --user
 
       - name: Read package version
         id: version
@@ -74,41 +70,193 @@ jobs:
           git tag -a "$VERSION" -m "Release $VERSION"
           git push origin "$VERSION"
 
-      - name: Build distribution 📦
+
+  # ============================================================
+  # Build Python package
+  # ============================================================
+
+  python-package:
+    needs: prepare
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/jam-py-v7
+
+    steps:
+      - name: Checkout merged main
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Install build
+        run: |
+          python -m pip install build --user
+
+      - name: Verify version
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          PACKAGE_VERSION=$(python -c "import jam; print('.'.join(map(str, jam.__version__)))")
+
+          echo "Tag version:     $VERSION"
+          echo "Package version: $PACKAGE_VERSION"
+
+          if [ "$VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "ERROR: Version mismatch."
+            exit 1
+          fi
+
+      - name: Build Python distribution
         run: |
           python -m build
 
-      - name: Store distribution packages
-        uses: actions/upload-artifact@v4
-        with:
-          name: python-package-distributions
-          path: dist/
+      - name: Show packages
+        run: |
+          ls -lh dist/
 
-      - name: Publish distribution to PyPI
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
 
-      - name: Sign distributions with Sigstore
-        uses: sigstore/gh-action-sigstore-python@v3.0.0
+      - name: Upload Python packages as artifact
+        uses: actions/upload-artifact@v4
         with:
-          inputs: >-
-            ./dist/*.tar.gz
-            ./dist/*.whl
+          name: python-packages
+          path: dist/
+
+
+  # ============================================================
+  # Build Windows PyInstaller package
+  # ============================================================
+
+  windows-package:
+    needs: prepare
+
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout merged main
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+
+      # ----------------------------------------------------------
+      # Put your existing PyInstaller setup/build steps here
+      # ----------------------------------------------------------
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+            cache: 'pip'
+            cache-dependency-path: |
+              utils/requirements.txt
+              **/requirements.txt
+
+      # Replace this with your existing installation/build steps
+      - name: Install dependencies
+        shell: powershell
+        run: |
+          python -m pip install --upgrade pip
+
+          # Put your existing requirements/install commands here
+            pip install -r utils/requirements.txt
+
+        - name: Prepare build folder (Windows)
+          if: matrix.os == 'windows-latest'
+          run: |
+            # Copy jam folder to demo
+            xcopy jam demo\jam\ /E /H /C /I /Y
+            # Copy utility scripts to demo
+            xcopy utils\run.py demo\ /Y
+            xcopy utils\asgi.py demo\ /Y
+          shell: cmd
+
+        - name: Build Executable with PyInstaller
+          run: |
+            cd demo
+            pyinstaller.exe -c -D --noupx --noconfirm --hidden-import oracledb --hidden-import duckdb --hidden-import databricks-sql-connector --hidden-import psycopg2 --hidden-import mysql-connector  --hidden-import pymssql --hidden-import sqlalchemy --hidden-import pyjsparser --hidden-import smtplib --hidden-import esprima --hidden-import jsmin --hidden-import sqlparse --hidden-import standard-imghdr --hidden-import werkzeug --hidden-import uvicorn --hidden-import uvicorn.logging --hidden-import uvicorn.loops --hidden-import uvicorn.loops.auto --hidden-import uvicorn.protocols --hidden-import uvicorn.protocols.http --hidden-import uvicorn.protocols.http.auto --hidden-import uvicorn.protocols.websockets --hidden-import uvicorn.protocols.websockets.auto --hidden-import uvicorn.lifespan --hidden-import uvicorn.lifespan.on --hidden-import asgiref --hidden-import asgiref.wsgi --add-data "demo.sqlite;." --add-data "admin.sqlite;." --add-data "js;js" --add-data "css;css" --add-data "reports;reports" --add-data "jam;jam" --add-data "static;static" --add-data "index.html;." --add-data "templates.html;." --add-data "asgi.py;." run.py --name=jampy_windows_x86_64
+          shell: cmd
+
+      - name: Create ZIP package
+        shell: powershell
+        run: |
+          Compress-Archive `
+            -Path demo/dist/jampy_windows_x86_64/* `
+            -DestinationPath jampy_windows_x86_64.zip
+
+      - name: Upload Windows package
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-package
+          path: jampy_windows_x86_64.zip
+
+
+  # ============================================================
+  # Create GitHub Release and attach everything
+  # ============================================================
+
+  github-release:
+    needs:
+      - prepare
+      - python-package
+      - windows-package
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+
+      - name: Download Python packages
+        uses: actions/download-artifact@v4
+        with:
+          name: python-packages
+          path: dist/
+
+      - name: Download Windows package
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-package
+          path: windows/
+
+      - name: Show release files
+        run: |
+          echo "Python packages:"
+          ls -lh dist/
+
+          echo
+          echo "Windows package:"
+          ls -lh windows/
 
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.version.outputs.version }}
+          VERSION: ${{ needs.prepare.outputs.version }}
         run: |
           gh release create "$VERSION" \
             --repo "$GITHUB_REPOSITORY" \
+            --title "$VERSION" \
             --notes ""
 
-      - name: Upload packages and signatures
+      - name: Upload all release assets
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.version.outputs.version }}
+          VERSION: ${{ needs.prepare.outputs.version }}
         run: |
           gh release upload \
             "$VERSION" \
-            dist/** \
+            dist/*.whl \
+            dist/*.tar.gz \
+            windows/jampy_windows_x86_64.zip \
             --repo "$GITHUB_REPOSITORY"

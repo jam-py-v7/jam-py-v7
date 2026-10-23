@@ -619,6 +619,19 @@ class AbstractServerTask(AbstrTask):
     def connect(self):
         return self.pool.connect()
 
+    def create_connection_ex(self, db_adapter, database, user=None, password=None, \
+        host=None, port=None, encoding=None, server=None):
+  
+        from jam.items import DBInfo
+        db_info = DBInfo()
+        db_info.server = server
+        db_info.host = server  
+        db_info.database = database
+        db_info.user = user
+        db_info.password = password
+        db_info.port = port         
+        return db_adapter.connect(db_info)
+
     def __execute_query_list(self, cursor, query_list):
         for query in query_list:
             if query:
@@ -650,7 +663,7 @@ class AbstractServerTask(AbstrTask):
                 con.close()
         return error
 
-    def select(self, select_query, connection=None, db=None):
+    def select(self, select_query, connection=None, db=None, params=None):
         result = None
         error = None
         con = connection
@@ -658,7 +671,7 @@ class AbstractServerTask(AbstrTask):
             con = self.connect()
         cursor = con.cursor()
         try:
-            self.execute_query(cursor, select_query)
+            self.execute_query(cursor, select_query, params)
             result = cursor.fetchall()
             result = [list(r) for r in result]
         except Exception as x:
